@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/favicon-192.png">
+<title>Admin — DEZA TECH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0D0D; --surface:#151515; --surface-2:#1c1c1c;
+    --white:#FFFFFF; --red:#E60012; --gray:#7A7A7A; --line:rgba(255,255,255,0.08);
+    --green:#2ecc71;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; min-height:100vh; }
+  h1,h2,h3{ font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; }
+  a{ color:inherit; }
+
+  header{ border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; }
+  header a.back{ font-size:13px; color:var(--gray); letter-spacing:0.05em; }
+  header a.back:hover{ color:var(--white); }
+  .brand{ font-size:14px; letter-spacing:0.15em; font-family:'Rajdhani',sans-serif; font-weight:700; }
+  .brand span{ color:var(--red); }
+
+  main{ max-width:900px; margin:0 auto; padding:64px 24px 100px; }
+  .page-tag{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--red); letter-spacing:0.15em; display:block; margin-bottom:14px; }
+  h1{ font-size:clamp(28px,5vw,40px); margin-bottom:14px; }
+  main > p.lead{ color:var(--gray); font-size:15px; line-height:1.6; margin-bottom:40px; max-width:520px; }
+
+  /* Gate */
+  .gate-card{ background:var(--surface); border:1px solid var(--line); padding:36px; max-width:420px; }
+  .gate-card label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); letter-spacing:0.1em; display:block; margin-bottom:10px; }
+  .gate-row{ display:flex; gap:10px; }
+  .gate-row input{
+    flex:1; background:var(--surface-2); border:1px solid var(--line); color:var(--white);
+    padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:14px;
+  }
+  .gate-row input:focus{ outline:none; border-color:var(--red); }
+  button{
+    background:var(--red); color:var(--white); border:none; cursor:pointer;
+    padding:0 22px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+  }
+  button:hover{ filter:brightness(1.15); }
+  button:disabled{ opacity:0.5; cursor:not-allowed; }
+  .gate-msg{ font-size:12px; color:var(--red); margin-top:12px; min-height:16px; }
+
+  /* Dashboard */
+  #dashboard{ display:none; }
+  .tabs{ display:flex; gap:10px; margin-bottom:36px; flex-wrap:wrap; }
+  .tab-btn{
+    background:none; border:1px solid var(--line); color:var(--gray);
+    padding:12px 24px; font-size:13px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+  }
+  .tab-btn:hover{ border-color:var(--gray); color:var(--white); }
+  .tab-btn.active{ background:var(--red); border-color:var(--red); color:var(--white); }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); padding:28px; margin-bottom:32px; }
+  .card h2{ font-size:18px; margin-bottom:6px; }
+  .card p.hint{ font-size:13px; color:var(--gray); margin-bottom:22px; }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  .form-field label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); letter-spacing:0.08em; display:block; margin-bottom:8px; }
+  .form-field input, .form-field select{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--white);
+    padding:12px 14px; font-size:14px; font-family:'Inter',sans-serif;
+  }
+  .form-field input:focus, .form-field select:focus{ outline:none; border-color:var(--red); }
+  .form-actions{ margin-top:22px; display:flex; gap:12px; align-items:center; }
+  .save-msg{ font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .save-msg.ok{ color:var(--green); }
+  .save-msg.err{ color:var(--red); }
+
+  .list-title{ font-size:14px; color:var(--gray); margin-bottom:14px; letter-spacing:0.05em; text-transform:uppercase; }
+  .item-row{ border:1px solid var(--line); padding:14px 18px; margin-bottom:10px; background:var(--surface-2); }
+  .item-row .top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .item-row .nm{ font-weight:600; }
+  .item-row .meta{ font-size:12px; color:var(--gray); margin-top:6px; font-family:'JetBrains Mono',monospace; }
+  .item-row .note{ font-size:13px; color:var(--gray); margin-top:8px; }
+  select.status-select{
+    background:var(--bg); border:1px solid var(--line); color:var(--white);
+    padding:6px 10px; font-size:12px; font-family:'JetBrains Mono',monospace; text-transform:uppercase;
+  }
+  .loading{ font-size:13px; color:var(--gray); font-family:'JetBrains Mono',monospace; }
+
+  @media (max-width:560px){ .form-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="index.html">← Kembali ke Website</a>
+  <div class="brand">DEZA<span>.</span>TECH</div>
+</header>
+
+<main>
+  <span class="page-tag">// ADMIN</span>
+  <h1>Dashboard Admin</h1>
+  <p class="lead">Satu tempat untuk mengelola data garansi dan booking servis pelanggan.</p>
+
+  <div id="gate">
+    <div class="gate-card">
+      <label>KODE AKSES</label>
+      <div class="gate-row">
+        <input type="password" id="passcodeInput" placeholder="Masukkan kode">
+        <button id="passcodeBtn">Masuk</button>
+      </div>
+      <p class="gate-msg" id="gateMsg"></p>
+    </div>
+  </div>
+
+  <div id="dashboard">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="garansi">Kelola Garansi</button>
+      <button class="tab-btn" data-tab="booking">Kelola Booking</button>
+    </div>
+
+    <!-- GARANSI -->
+    <div class="panel active" id="panel-garansi">
+      <div class="card">
+        <h2>Tambah Data Garansi</h2>
+        <p class="hint">Setelah disimpan, pelanggan langsung bisa cek nomor ini di halaman "Cek Garansi".</p>
+        <div class="form-grid">
+          <div class="form-field full">
+            <label>NOMOR GARANSI *</label>
+            <input type="text" id="g_no" placeholder="DZT-2505001">
+          </div>
+          <div class="form-field">
+            <label>NAMA PELANGGAN *</label>
+            <input type="text" id="g_nama">
+          </div>
+          <div class="form-field">
+            <label>NO. TELEPON</label>
+            <input type="text" id="g_telp">
+          </div>
+          <div class="form-field">
+            <label>TANGGAL PEMBELIAN *</label>
+            <input type="date" id="g_tanggal">
+          </div>
+          <div class="form-field">
+            <label>MASA GARANSI (HARI)</label>
+            <input type="number" id="g_hari" value="30">
+          </div>
+          <div class="form-field">
+            <label>PRODUK / JASA *</label>
+            <input type="text" id="g_produk">
+          </div>
+          <div class="form-field">
+            <label>NO. INVOICE</label>
+            <input type="text" id="g_invoice">
+          </div>
+          <div class="form-field full">
+            <label>DEALER / TEKNISI</label>
+            <input type="text" id="g_dealer">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button id="g_saveBtn">Simpan Garansi</button>
+          <span class="save-msg" id="g_saveMsg"></span>
+        </div>
+      </div>
+
+      <div class="list-title">DATA GARANSI TERSIMPAN</div>
+      <div id="g_list"><div class="loading">Memuat...</div></div>
+    </div>
+
+    <!-- BOOKING -->
+    <div class="panel" id="panel-booking">
+      <div class="list-title">DAFTAR BOOKING SERVIS</div>
+      <div id="b_list"><div class="loading">Memuat...</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const ADMIN_CODE = 'DEZA2026';
+  function fmtDate(d){ if(!d) return '-'; return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' }); }
+
+  // ---------- Gate ----------
+  document.getElementById('passcodeBtn').addEventListener('click', () => {
+    const val = document.getElementById('passcodeInput').value;
+    if(val === ADMIN_CODE){
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadWarranties();
+      loadBookings();
+    }else{
+      document.getElementById('gateMsg').textContent = 'Kode salah, coba lagi.';
+    }
+  });
+  document.getElementById('passcodeInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') document.getElementById('passcodeBtn').click();
+  });
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---------- Garansi: Save ----------
+  document.getElementById('g_saveBtn').addEventListener('click', async () => {
+    const no = document.getElementById('g_no').value.trim().toUpperCase();
+    const nama = document.getElementById('g_nama').value.trim();
+    const tanggal = document.getElementById('g_tanggal').value;
+    const produk = document.getElementById('g_produk').value.trim();
+    const msg = document.getElementById('g_saveMsg');
+
+    if(!no || !nama || !tanggal || !produk){
+      msg.textContent = 'Lengkapi field bertanda *'; msg.className = 'save-msg err'; return;
+    }
+    const record = {
+      nama, telp: document.getElementById('g_telp').value.trim(),
+      tanggal, hari: document.getElementById('g_hari').value || 30,
+      produk, invoice: document.getElementById('g_invoice').value.trim(),
+      dealer: document.getElementById('g_dealer').value.trim(),
+    };
+    const btn = document.getElementById('g_saveBtn');
+    btn.disabled = true;
+    try{
+      const result = await window.storage.set('warranty:' + no, JSON.stringify(record), true);
+      if(!result) throw new Error('failed');
+      let idx = [];
+      try{
+        const idxRes = await window.storage.get('warranty-index', true);
+        idx = idxRes ? JSON.parse(idxRes.value) : [];
+      }catch(e){ idx = []; }
+      if(!idx.includes(no)) idx.unshift(no);
+      idx = idx.slice(0, 30);
+      await window.storage.set('warranty-index', JSON.stringify(idx), true);
+
+      msg.textContent = 'Tersimpan: ' + no; msg.className = 'save-msg ok';
+      ['g_no','g_nama','g_telp','g_produk','g_invoice','g_dealer'].forEach(id => document.getElementById(id).value = '');
+      loadWarranties();
+    }catch(err){
+      msg.textContent = 'Gagal menyimpan, coba lagi.'; msg.className = 'save-msg err';
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  async function loadWarranties(){
+    const listEl = document.getElementById('g_list');
+    listEl.innerHTML = '<div class="loading">Memuat...</div>';
+    try{
+      const idxRes = await window.storage.get('warranty-index', true);
+      const idx = idxRes ? JSON.parse(idxRes.value) : [];
+      if(idx.length === 0){ listEl.innerHTML = '<div class="loading">Belum ada data.</div>'; return; }
+      const rows = [];
+      for(const no of idx){
+        try{
+          const r = await window.storage.get('warranty:' + no, true);
+          if(r){
+            const d = JSON.parse(r.value);
+            rows.push(`
+              <div class="item-row">
+                <div class="top"><span class="nm">${no}</span><span class="meta">${fmtDate(d.tanggal)} · ${d.hari||30} hari</span></div>
+                <div class="meta">${d.nama} · ${d.produk}</div>
+              </div>
+            `);
+          }
+        }catch(e){ /* skip */ }
+      }
+      listEl.innerHTML = rows.join('') || '<div class="loading">Belum ada data.</div>';
+    }catch(err){
+      listEl.innerHTML = '<div class="loading">Gagal memuat data.</div>';
+    }
+  }
+
+  // ---------- Booking: List + status ----------
+  const STATUS_OPTIONS = ['Baru','Dikonfirmasi','Selesai','Batal'];
+
+  async function loadBookings(){
+    const listEl = document.getElementById('b_list');
+    listEl.innerHTML = '<div class="loading">Memuat...</div>';
+    try{
+      const idxRes = await window.storage.get('booking-index', true);
+      const idx = idxRes ? JSON.parse(idxRes.value) : [];
+      if(idx.length === 0){ listEl.innerHTML = '<div class="loading">Belum ada booking.</div>'; return; }
+
+      const items = [];
+      for(const id of idx){
+        try{
+          const r = await window.storage.get('booking:' + id, true);
+          if(r) items.push({ id, data: JSON.parse(r.value) });
+        }catch(e){ /* skip */ }
+      }
+
+      listEl.innerHTML = items.map(({id, data}) => `
+        <div class="item-row" data-id="${id}">
+          <div class="top">
+            <span class="nm">${data.nama} — ${data.layanan}</span>
+            <select class="status-select" data-id="${id}">
+              ${STATUS_OPTIONS.map(s => `<option value="${s}" ${s===data.status?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="meta">${data.kendaraan} · ${fmtDate(data.tanggal)} · ${data.telp} · BK-${id.toUpperCase()}</div>
+          ${data.catatan ? `<div class="note">${data.catatan}</div>` : ''}
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.status-select').forEach(sel => {
+        sel.addEventListener('change', async (e) => {
+          const bid = e.target.getAttribute('data-id');
+          try{
+            const r = await window.storage.get('booking:' + bid, true);
+            const data = JSON.parse(r.value);
+            data.status = e.target.value;
+            await window.storage.set('booking:' + bid, JSON.stringify(data), true);
+          }catch(err){ /* ignore */ }
+        });
+      });
+    }catch(err){
+      listEl.innerHTML = '<div class="loading">Gagal memuat data.</div>';
+    }
+  }
+</script>
+
+</body>
+</html>

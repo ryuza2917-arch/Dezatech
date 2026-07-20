@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Garansi — DEZA TECH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0D0D; --surface:#151515; --surface-2:#1c1c1c;
+    --white:#FFFFFF; --red:#E60012; --gray:#7A7A7A; --line:rgba(255,255,255,0.08);
+    --green:#2ecc71; --amber:#e6a000;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; min-height:100vh; }
+  h1,h2,h3{ font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; }
+
+  header{ border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; }
+  header a.back{ font-size:13px; color:var(--gray); letter-spacing:0.05em; }
+  header a.back:hover{ color:var(--white); }
+  .brand{ font-size:14px; letter-spacing:0.15em; font-family:'Rajdhani',sans-serif; font-weight:700; }
+  .brand span{ color:var(--red); }
+
+  main{ max-width:640px; margin:0 auto; padding:64px 24px 100px; }
+
+  .page-tag{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--red); letter-spacing:0.15em; display:block; margin-bottom:14px; }
+  h1{ font-size:clamp(28px,5vw,42px); margin-bottom:14px; }
+  main > p.lead{ color:var(--gray); font-size:15px; line-height:1.6; margin-bottom:44px; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); padding:28px; }
+  .field label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); letter-spacing:0.1em; display:block; margin-bottom:8px; }
+  .search-row{ display:flex; gap:10px; }
+  .search-row input{
+    flex:1; background:var(--surface-2); border:1px solid var(--line); color:var(--white);
+    padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:14px; letter-spacing:0.05em;
+  }
+  .search-row input::placeholder{ color:var(--gray); }
+  .search-row input:focus{ outline:none; border-color:var(--red); }
+  button{
+    background:var(--red); color:var(--white); border:none; cursor:pointer;
+    padding:0 24px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+  }
+  button:hover{ filter:brightness(1.15); }
+  button:disabled{ opacity:0.5; cursor:not-allowed; }
+  .hint{ font-size:12px; color:var(--gray); margin-top:12px; }
+
+  .result{ margin-top:28px; display:none; }
+  .result.show{ display:block; }
+  .status-bar{ display:flex; align-items:center; gap:10px; padding:16px 20px; border:1px solid var(--line); background:var(--surface-2); margin-bottom:1px; }
+  .status-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .status-dot.aktif{ background:var(--green); box-shadow:0 0 8px var(--green); }
+  .status-dot.expired{ background:var(--gray); }
+  .status-text{ font-family:'Rajdhani',sans-serif; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; font-size:15px; }
+  .status-sub{ font-size:12px; color:var(--gray); margin-left:auto; font-family:'JetBrains Mono',monospace; }
+
+  .detail-grid{ border:1px solid var(--line); border-top:none; }
+  .detail-row{ display:flex; padding:14px 20px; border-top:1px solid var(--line); font-size:14px; }
+  .detail-row:first-child{ border-top:none; }
+  .detail-row .k{ width:180px; color:var(--gray); flex-shrink:0; }
+  .detail-row .v{ color:var(--white); }
+
+  .not-found{ margin-top:28px; padding:20px; border:1px solid var(--line); background:var(--surface-2); color:var(--gray); font-size:14px; display:none; }
+  .not-found.show{ display:block; }
+
+  .admin-toggle{ text-align:center; margin-top:70px; }
+  .admin-toggle button.link{
+    background:none; clip-path:none; padding:0; color:var(--gray); font-size:12px;
+    text-transform:none; letter-spacing:normal; font-weight:400; font-family:'Inter',sans-serif;
+    border-bottom:1px dotted var(--gray);
+  }
+  .admin-toggle button.link:hover{ color:var(--white); }
+
+  .admin-panel{ display:none; margin-top:32px; border-top:1px solid var(--line); padding-top:40px; }
+  .admin-panel.show{ display:block; }
+  .admin-panel h2{ font-size:20px; margin-bottom:6px; }
+  .admin-panel p.lead{ margin-bottom:24px; }
+
+  .gate{ display:flex; gap:10px; max-width:340px; }
+  .gate input{ flex:1; background:var(--surface-2); border:1px solid var(--line); color:var(--white); padding:12px 14px; font-family:'JetBrains Mono',monospace; }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  .form-field label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); letter-spacing:0.08em; display:block; margin-bottom:8px; }
+  .form-field input{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--white);
+    padding:12px 14px; font-size:14px; font-family:'Inter',sans-serif;
+  }
+  .form-field input:focus{ outline:none; border-color:var(--red); }
+  .form-actions{ margin-top:24px; display:flex; gap:12px; align-items:center; }
+  .save-msg{ font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .save-msg.ok{ color:var(--green); }
+  .save-msg.err{ color:var(--red); }
+
+  .list-recent{ margin-top:40px; }
+  .list-recent h3{ font-size:14px; color:var(--gray); margin-bottom:14px; letter-spacing:0.05em; }
+  .list-row{ display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid var(--line); font-size:13px; }
+  .list-row:first-child{ border-top:none; }
+  .list-row .no{ font-family:'JetBrains Mono',monospace; color:var(--red); }
+  .list-row .nm{ color:var(--gray); }
+
+  .loading{ font-size:13px; color:var(--gray); font-family:'JetBrains Mono',monospace; }
+
+  @media (max-width:560px){
+    .form-grid{ grid-template-columns:1fr; }
+    .detail-row{ flex-direction:column; gap:4px; }
+    .detail-row .k{ width:auto; }
+    .status-sub{ margin-left:0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="index.html">← Kembali</a>
+  <div class="brand">DEZA<span>.</span>TECH</div>
+</header>
+
+<main>
+  <span class="page-tag">// CEK GARANSI</span>
+  <h1>Status Garansi Produk</h1>
+  <p class="lead">Masukkan nomor garansi yang tertera pada kartu garansi fisik Anda untuk melihat status dan detail perlindungan produk.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>NOMOR GARANSI</label>
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Contoh: DZT-2505001" autocomplete="off">
+        <button id="searchBtn">Cek</button>
+      </div>
+      <p class="hint">Format umum: DZT-[tahun][bulan]-[urutan], contoh DZT-2505001.</p>
+    </div>
+
+    <div class="result" id="result">
+      <div class="status-bar">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText"></span>
+        <span class="status-sub" id="statusSub"></span>
+      </div>
+      <div class="detail-grid" id="detailGrid"></div>
+    </div>
+
+    <div class="not-found" id="notFound">
+      Nomor garansi tidak ditemukan. Periksa kembali penulisan nomor pada kartu garansi Anda, atau hubungi kami via WhatsApp untuk bantuan.
+    </div>
+  </div>
+
+  <div class="admin-toggle">
+    <button class="link" id="adminToggle">Admin / Teknisi</button>
+  </div>
+
+  <div class="admin-panel" id="adminPanel">
+    <div id="gateWrap">
+      <h2>Masuk Admin</h2>
+      <p class="lead">Khusus untuk teknisi/dealer yang menerbitkan kartu garansi.</p>
+      <div class="gate">
+        <input type="password" id="passcodeInput" placeholder="Kode akses">
+        <button id="passcodeBtn">Masuk</button>
+      </div>
+      <p class="hint" id="gateMsg"></p>
+    </div>
+
+    <div id="adminForm" style="display:none;">
+      <h2>Tambah Data Garansi</h2>
+      <p class="lead">Data ini otomatis dapat dicek pelanggan lewat nomor garansi di atas.</p>
+      <div class="form-grid">
+        <div class="form-field full">
+          <label>NOMOR GARANSI *</label>
+          <input type="text" id="f_no" placeholder="DZT-2505001">
+        </div>
+        <div class="form-field">
+          <label>NAMA PELANGGAN *</label>
+          <input type="text" id="f_nama">
+        </div>
+        <div class="form-field">
+          <label>NO. TELEPON</label>
+          <input type="text" id="f_telp">
+        </div>
+        <div class="form-field">
+          <label>TANGGAL PEMBELIAN *</label>
+          <input type="date" id="f_tanggal">
+        </div>
+        <div class="form-field">
+          <label>MASA GARANSI (HARI)</label>
+          <input type="number" id="f_hari" value="30">
+        </div>
+        <div class="form-field">
+          <label>PRODUK / JASA *</label>
+          <input type="text" id="f_produk">
+        </div>
+        <div class="form-field">
+          <label>NO. INVOICE</label>
+          <input type="text" id="f_invoice">
+        </div>
+        <div class="form-field full">
+          <label>DEALER / TEKNISI</label>
+          <input type="text" id="f_dealer">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button id="saveBtn">Simpan Garansi</button>
+        <span class="save-msg" id="saveMsg"></span>
+      </div>
+
+      <div class="list-recent">
+        <h3>DATA TERSIMPAN TERAKHIR</h3>
+        <div id="recentList" class="loading">Memuat...</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // ---------- Utility ----------
+  function computeStatus(tanggalPembelian, hari){
+    const start = new Date(tanggalPembelian);
+    const end = new Date(start);
+    end.setDate(end.getDate() + Number(hari || 30));
+    const now = new Date();
+    const msLeft = end - now;
+    const daysLeft = Math.ceil(msLeft / (1000*60*60*24));
+    return { end, active: msLeft > 0, daysLeft };
+  }
+  function fmtDate(d){
+    return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  // ---------- Public: Cek Garansi ----------
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const resultEl = document.getElementById('result');
+  const notFoundEl = document.getElementById('notFound');
+
+  async function doSearch(){
+    const raw = searchInput.value.trim().toUpperCase();
+    resultEl.classList.remove('show');
+    notFoundEl.classList.remove('show');
+    if(!raw) return;
+    searchBtn.disabled = true;
+    try{
+      const res = await window.storage.get('warranty:' + raw, true);
+      if(!res || !res.value){ throw new Error('not found'); }
+      const data = JSON.parse(res.value);
+      const st = computeStatus(data.tanggal, data.hari);
+
+      document.getElementById('statusDot').className = 'status-dot ' + (st.active ? 'aktif' : 'expired');
+      document.getElementById('statusText').textContent = st.active ? 'Garansi Aktif' : 'Garansi Berakhir';
+      document.getElementById('statusSub').textContent = st.active
+        ? ('Berakhir ' + fmtDate(st.end))
+        : ('Berakhir ' + fmtDate(st.end));
+
+      const rows = [
+        ['No. Garansi', raw],
+        ['Nama Pelanggan', data.nama || '-'],
+        ['Produk / Jasa', data.produk || '-'],
+        ['Tanggal Pembelian', fmtDate(data.tanggal)],
+        ['Masa Garansi', (data.hari || 30) + ' hari'],
+        ['No. Invoice', data.invoice || '-'],
+        ['Dealer / Teknisi', data.dealer || '-'],
+      ];
+      document.getElementById('detailGrid').innerHTML = rows.map(r =>
+        `<div class="detail-row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`
+      ).join('');
+
+      resultEl.classList.add('show');
+    }catch(err){
+      notFoundEl.classList.add('show');
+    }finally{
+      searchBtn.disabled = false;
+    }
+  }
+  searchBtn.addEventListener('click', doSearch);
+  searchInput.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
+
+  // ---------- Admin ----------
+  const ADMIN_CODE = 'DEZA2026'; // kode sederhana, bukan keamanan tingkat produksi
+  const adminToggle = document.getElementById('adminToggle');
+  const adminPanel = document.getElementById('adminPanel');
+  const gateWrap = document.getElementById('gateWrap');
+  const adminForm = document.getElementById('adminForm');
+  const passcodeInput = document.getElementById('passcodeInput');
+  const passcodeBtn = document.getElementById('passcodeBtn');
+  const gateMsg = document.getElementById('gateMsg');
+
+  adminToggle.addEventListener('click', () => {
+    adminPanel.classList.toggle('show');
+  });
+
+  passcodeBtn.addEventListener('click', () => {
+    if(passcodeInput.value === ADMIN_CODE){
+      gateWrap.style.display = 'none';
+      adminForm.style.display = 'block';
+      loadRecent();
+    }else{
+      gateMsg.textContent = 'Kode salah.';
+    }
+  });
+  passcodeInput.addEventListener('keydown', e => { if(e.key === 'Enter') passcodeBtn.click(); });
+
+  const saveBtn = document.getElementById('saveBtn');
+  const saveMsg = document.getElementById('saveMsg');
+
+  saveBtn.addEventListener('click', async () => {
+    const no = document.getElementById('f_no').value.trim().toUpperCase();
+    const nama = document.getElementById('f_nama').value.trim();
+    const tanggal = document.getElementById('f_tanggal').value;
+    const produk = document.getElementById('f_produk').value.trim();
+
+    if(!no || !nama || !tanggal || !produk){
+      saveMsg.textContent = 'Lengkapi field bertanda *';
+      saveMsg.className = 'save-msg err';
+      return;
+    }
+    const record = {
+      nama,
+      telp: document.getElementById('f_telp').value.trim(),
+      tanggal,
+      hari: document.getElementById('f_hari').value || 30,
+      produk,
+      invoice: document.getElementById('f_invoice').value.trim(),
+      dealer: document.getElementById('f_dealer').value.trim(),
+    };
+    saveBtn.disabled = true;
+    try{
+      const result = await window.storage.set('warranty:' + no, JSON.stringify(record), true);
+      if(!result){ throw new Error('failed'); }
+      // keep an index of warranty numbers for the recent list
+      let idx = [];
+      try{
+        const idxRes = await window.storage.get('warranty-index', true);
+        idx = idxRes ? JSON.parse(idxRes.value) : [];
+      }catch(e){ idx = []; }
+      if(!idx.includes(no)) idx.unshift(no);
+      idx = idx.slice(0, 20);
+      await window.storage.set('warranty-index', JSON.stringify(idx), true);
+
+      saveMsg.textContent = 'Tersimpan: ' + no;
+      saveMsg.className = 'save-msg ok';
+      ['f_no','f_nama','f_telp','f_produk','f_invoice','f_dealer'].forEach(id => document.getElementById(id).value = '');
+      loadRecent();
+    }catch(err){
+      saveMsg.textContent = 'Gagal menyimpan, coba lagi.';
+      saveMsg.className = 'save-msg err';
+    }finally{
+      saveBtn.disabled = false;
+    }
+  });
+
+  async function loadRecent(){
+    const listEl = document.getElementById('recentList');
+    listEl.textContent = 'Memuat...';
+    try{
+      const idxRes = await window.storage.get('warranty-index', true);
+      const idx = idxRes ? JSON.parse(idxRes.value) : [];
+      if(idx.length === 0){ listEl.textContent = 'Belum ada data.'; return; }
+      const rows = [];
+      for(const no of idx){
+        try{
+          const r = await window.storage.get('warranty:' + no, true);
+          if(r){
+            const d = JSON.parse(r.value);
+            rows.push(`<div class="list-row"><span class="no">${no}</span><span class="nm">${d.nama || ''}</span></div>`);
+          }
+        }catch(e){ /* skip missing */ }
+      }
+      listEl.innerHTML = rows.join('') || 'Belum ada data.';
+    }catch(err){
+      listEl.textContent = 'Gagal memuat data.';
+    }
+  }
+</script>
+
+</body>
+</html>

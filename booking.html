@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Servis — DEZA TECH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0D0D; --surface:#151515; --surface-2:#1c1c1c;
+    --white:#FFFFFF; --red:#E60012; --gray:#7A7A7A; --line:rgba(255,255,255,0.08);
+    --green:#2ecc71; --amber:#e6a000;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; min-height:100vh; }
+  h1,h2,h3{ font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; }
+
+  header{ border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; }
+  header a.back{ font-size:13px; color:var(--gray); letter-spacing:0.05em; }
+  header a.back:hover{ color:var(--white); }
+  .brand{ font-size:14px; letter-spacing:0.15em; font-family:'Rajdhani',sans-serif; font-weight:700; }
+  .brand span{ color:var(--red); }
+
+  main{ max-width:680px; margin:0 auto; padding:64px 24px 100px; }
+  .page-tag{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--red); letter-spacing:0.15em; display:block; margin-bottom:14px; }
+  h1{ font-size:clamp(28px,5vw,42px); margin-bottom:14px; }
+  main > p.lead{ color:var(--gray); font-size:15px; line-height:1.6; margin-bottom:44px; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); padding:28px; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  .form-field label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); letter-spacing:0.08em; display:block; margin-bottom:8px; }
+  .form-field input, .form-field select, .form-field textarea{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--white);
+    padding:12px 14px; font-size:14px; font-family:'Inter',sans-serif;
+  }
+  .form-field textarea{ resize:vertical; min-height:80px; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus{ outline:none; border-color:var(--red); }
+  .form-actions{ margin-top:24px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  button{
+    background:var(--red); color:var(--white); border:none; cursor:pointer;
+    padding:14px 26px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+  }
+  button:hover{ filter:brightness(1.15); }
+  button:disabled{ opacity:0.5; cursor:not-allowed; }
+  .save-msg{ font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .save-msg.ok{ color:var(--green); }
+  .save-msg.err{ color:var(--red); }
+
+  .success-panel{ display:none; text-align:center; padding:48px 28px; }
+  .success-panel.show{ display:block; }
+  .success-panel .code{ font-family:'JetBrains Mono',monospace; color:var(--red); font-size:20px; margin:14px 0; }
+  .success-panel p{ color:var(--gray); font-size:14px; line-height:1.6; }
+  .success-panel .btn2{ margin-top:24px; display:inline-block; }
+
+  .admin-toggle{ text-align:center; margin-top:60px; }
+  .admin-toggle button.link{
+    background:none; clip-path:none; padding:0; color:var(--gray); font-size:12px;
+    text-transform:none; letter-spacing:normal; font-weight:400; font-family:'Inter',sans-serif;
+    border-bottom:1px dotted var(--gray);
+  }
+  .admin-toggle button.link:hover{ color:var(--white); }
+
+  .admin-panel{ display:none; margin-top:32px; border-top:1px solid var(--line); padding-top:40px; }
+  .admin-panel.show{ display:block; }
+  .gate{ display:flex; gap:10px; max-width:340px; }
+  .gate input{ flex:1; background:var(--surface-2); border:1px solid var(--line); color:var(--white); padding:12px 14px; font-family:'JetBrains Mono',monospace; }
+  .hint{ font-size:12px; color:var(--gray); margin-top:12px; }
+
+  .booking-list{ margin-top:20px; }
+  .booking-item{ border:1px solid var(--line); padding:16px 18px; margin-bottom:10px; background:var(--surface-2); }
+  .booking-item .top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .booking-item .nm{ font-weight:600; }
+  .booking-item .meta{ font-size:12px; color:var(--gray); margin-top:6px; font-family:'JetBrains Mono',monospace; }
+  .booking-item .note{ font-size:13px; color:var(--gray); margin-top:8px; }
+  select.status-select{
+    background:var(--bg); border:1px solid var(--line); color:var(--white);
+    padding:6px 10px; font-size:12px; font-family:'JetBrains Mono',monospace; text-transform:uppercase;
+  }
+  .loading{ font-size:13px; color:var(--gray); font-family:'JetBrains Mono',monospace; }
+
+  @media (max-width:560px){
+    .form-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="index.html">← Kembali</a>
+  <div class="brand">DEZA<span>.</span>TECH</div>
+</header>
+
+<main>
+  <span class="page-tag">// BOOKING SERVIS</span>
+  <h1>Jadwalkan Pemasangan / Servis</h1>
+  <p class="lead">Isi formulir berikut untuk booking pemasangan produk atau servis kendaraan Anda. Tim kami akan menghubungi Anda untuk konfirmasi jadwal.</p>
+
+  <div class="card" id="formCard">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>NAMA LENGKAP *</label>
+        <input type="text" id="b_nama">
+      </div>
+      <div class="form-field">
+        <label>NO. WHATSAPP *</label>
+        <input type="text" id="b_telp" placeholder="08xx-xxxx-xxxx">
+      </div>
+      <div class="form-field full">
+        <label>KENDARAAN (MERK / TIPE) *</label>
+        <input type="text" id="b_kendaraan" placeholder="Contoh: Honda Vario 160">
+      </div>
+      <div class="form-field">
+        <label>JENIS LAYANAN *</label>
+        <select id="b_layanan">
+          <option value="">Pilih layanan</option>
+          <option>Pemasangan Lighting</option>
+          <option>Pemasangan Electronics</option>
+          <option>Pemasangan Wiring Harness</option>
+          <option>Servis / Klaim Garansi</option>
+          <option>Konsultasi Produk</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>TANGGAL DIINGINKAN *</label>
+        <input type="date" id="b_tanggal">
+      </div>
+      <div class="form-field full">
+        <label>CATATAN TAMBAHAN</label>
+        <textarea id="b_catatan" placeholder="Jelaskan kebutuhan Anda, misalnya jenis lampu atau kendala kelistrikan"></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button id="submitBtn">Kirim Booking</button>
+      <span class="save-msg" id="saveMsg"></span>
+    </div>
+  </div>
+
+  <div class="success-panel" id="successPanel">
+    <span class="page-tag">BOOKING DITERIMA</span>
+    <h2>Terima Kasih!</h2>
+    <div class="code" id="successCode"></div>
+    <p>Simpan kode booking di atas. Tim DEZA TECH akan menghubungi Anda via WhatsApp untuk konfirmasi jadwal.</p>
+    <a class="btn2" id="waLink" href="#" target="_blank">
+      <button type="button">Konfirmasi via WhatsApp</button>
+    </a>
+  </div>
+
+  <div class="admin-toggle">
+    <button class="link" id="adminToggle">Admin / Teknisi</button>
+  </div>
+
+  <div class="admin-panel" id="adminPanel">
+    <div id="gateWrap">
+      <h2>Masuk Admin</h2>
+      <p class="lead">Lihat dan kelola daftar booking servis.</p>
+      <div class="gate">
+        <input type="password" id="passcodeInput" placeholder="Kode akses">
+        <button id="passcodeBtn">Masuk</button>
+      </div>
+      <p class="hint" id="gateMsg"></p>
+    </div>
+
+    <div id="adminList" style="display:none;">
+      <h2>Daftar Booking</h2>
+      <p class="lead">Booking terbaru muncul di atas. Ubah status setelah dikonfirmasi atau selesai dikerjakan.</p>
+      <div class="booking-list" id="bookingList"><div class="loading">Memuat...</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function fmtDate(d){
+    if(!d) return '-';
+    return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+  }
+  function genId(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  // ---------- Public: Submit Booking ----------
+  const submitBtn = document.getElementById('submitBtn');
+  const saveMsg = document.getElementById('saveMsg');
+  const formCard = document.getElementById('formCard');
+  const successPanel = document.getElementById('successPanel');
+
+  submitBtn.addEventListener('click', async () => {
+    const nama = document.getElementById('b_nama').value.trim();
+    const telp = document.getElementById('b_telp').value.trim();
+    const kendaraan = document.getElementById('b_kendaraan').value.trim();
+    const layanan = document.getElementById('b_layanan').value;
+    const tanggal = document.getElementById('b_tanggal').value;
+    const catatan = document.getElementById('b_catatan').value.trim();
+
+    if(!nama || !telp || !kendaraan || !layanan || !tanggal){
+      saveMsg.textContent = 'Lengkapi field bertanda *';
+      saveMsg.className = 'save-msg err';
+      return;
+    }
+
+    const id = genId();
+    const record = { nama, telp, kendaraan, layanan, tanggal, catatan, status: 'Baru', createdAt: new Date().toISOString() };
+
+    submitBtn.disabled = true;
+    try{
+      const result = await window.storage.set('booking:' + id, JSON.stringify(record), true);
+      if(!result){ throw new Error('failed'); }
+
+      let idx = [];
+      try{
+        const idxRes = await window.storage.get('booking-index', true);
+        idx = idxRes ? JSON.parse(idxRes.value) : [];
+      }catch(e){ idx = []; }
+      idx.unshift(id);
+      idx = idx.slice(0, 100);
+      await window.storage.set('booking-index', JSON.stringify(idx), true);
+
+      const codeDisplay = 'BK-' + id.toUpperCase();
+      document.getElementById('successCode').textContent = codeDisplay;
+      const waText = encodeURIComponent(
+        `Halo DEZA TECH, saya ${nama} sudah booking servis (${codeDisplay}) untuk ${layanan} - ${kendaraan} pada ${fmtDate(tanggal)}.`
+      );
+      document.getElementById('waLink').href = `https://wa.me/6285716314611?text=${waText}`;
+
+      formCard.style.display = 'none';
+      successPanel.classList.add('show');
+    }catch(err){
+      saveMsg.textContent = 'Gagal mengirim, coba lagi.';
+      saveMsg.className = 'save-msg err';
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  // ---------- Admin ----------
+  const ADMIN_CODE = 'DEZA2026'; // kode sederhana, bukan keamanan tingkat produksi
+  const adminToggle = document.getElementById('adminToggle');
+  const adminPanel = document.getElementById('adminPanel');
+  const gateWrap = document.getElementById('gateWrap');
+  const adminList = document.getElementById('adminList');
+  const passcodeInput = document.getElementById('passcodeInput');
+  const passcodeBtn = document.getElementById('passcodeBtn');
+  const gateMsg = document.getElementById('gateMsg');
+
+  adminToggle.addEventListener('click', () => adminPanel.classList.toggle('show'));
+
+  passcodeBtn.addEventListener('click', () => {
+    if(passcodeInput.value === ADMIN_CODE){
+      gateWrap.style.display = 'none';
+      adminList.style.display = 'block';
+      loadBookings();
+    }else{
+      gateMsg.textContent = 'Kode salah.';
+    }
+  });
+  passcodeInput.addEventListener('keydown', e => { if(e.key === 'Enter') passcodeBtn.click(); });
+
+  const STATUS_OPTIONS = ['Baru','Dikonfirmasi','Selesai','Batal'];
+
+  async function loadBookings(){
+    const listEl = document.getElementById('bookingList');
+    listEl.innerHTML = '<div class="loading">Memuat...</div>';
+    try{
+      const idxRes = await window.storage.get('booking-index', true);
+      const idx = idxRes ? JSON.parse(idxRes.value) : [];
+      if(idx.length === 0){ listEl.innerHTML = '<div class="loading">Belum ada booking.</div>'; return; }
+
+      const items = [];
+      for(const id of idx){
+        try{
+          const r = await window.storage.get('booking:' + id, true);
+          if(r) items.push({ id, data: JSON.parse(r.value) });
+        }catch(e){ /* skip missing */ }
+      }
+
+      listEl.innerHTML = items.map(({id, data}) => `
+        <div class="booking-item" data-id="${id}">
+          <div class="top">
+            <span class="nm">${data.nama} — ${data.layanan}</span>
+            <select class="status-select" data-id="${id}">
+              ${STATUS_OPTIONS.map(s => `<option value="${s}" ${s===data.status?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="meta">${data.kendaraan} · ${fmtDate(data.tanggal)} · ${data.telp} · BK-${id.toUpperCase()}</div>
+          ${data.catatan ? `<div class="note">${data.catatan}</div>` : ''}
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.status-select').forEach(sel => {
+        sel.addEventListener('change', async (e) => {
+          const bid = e.target.getAttribute('data-id');
+          try{
+            const r = await window.storage.get('booking:' + bid, true);
+            const data = JSON.parse(r.value);
+            data.status = e.target.value;
+            await window.storage.set('booking:' + bid, JSON.stringify(data), true);
+          }catch(err){ /* ignore */ }
+        });
+      });
+    }catch(err){
+      listEl.innerHTML = '<div class="loading">Gagal memuat data.</div>';
+    }
+  }
+</script>
+
+</body>
+</html>

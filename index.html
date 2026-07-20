@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEZA TECH — Driven by Innovation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #000000;
+    --bg: #0D0D0D;
+    --surface: #151515;
+    --surface-2: #1c1c1c;
+    --white: #FFFFFF;
+    --red: #E60012;
+    --red-dim: #7a0009;
+    --gray: #7A7A7A;
+    --line: rgba(255,255,255,0.08);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{
+    font-family:'Rajdhani', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1200px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(10,10,10,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 32px; max-width:1200px; margin:0 auto;
+  }
+  .nav-logo{ height:28px; }
+  .nav-links{ display:flex; gap:36px; }
+  .nav-links a{
+    font-size:13px; letter-spacing:0.12em; text-transform:uppercase;
+    font-weight:600; color:var(--gray); transition:color .25s;
+  }
+  .nav-links a:hover{ color:var(--white); }
+  .nav-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red); color:var(--white);
+    font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+    padding:10px 18px; clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+    transition:filter .2s;
+  }
+  .nav-cta:hover{ filter:brightness(1.15); }
+  .nav-mobile{ display:none; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding-top:80px;
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute; inset:0;
+    background:url('assets/headlamp-crop.png') right center / cover no-repeat;
+    opacity:0.55;
+  }
+  .hero-fade{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(90deg, var(--bg) 0%, var(--bg) 28%, rgba(13,13,13,0.65) 55%, rgba(13,13,13,0.15) 100%),
+      linear-gradient(0deg, var(--bg) 0%, transparent 18%, transparent 82%, var(--bg) 100%);
+  }
+  .hero-blade{
+    position:absolute; top:-10%; left:38%;
+    width:340px; height:140%;
+    background:var(--red);
+    opacity:0.10;
+    clip-path:polygon(60% 0, 100% 0, 40% 100%, 0 100%);
+    z-index:1;
+  }
+  .hero-content{
+    position:relative; z-index:2;
+    max-width:1200px; margin:0 auto; padding:0 32px;
+    width:100%;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:0.15em; color:var(--red);
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; display:block; width:24px; height:2px; background:var(--red);
+  }
+  .hero h1{
+    font-size:clamp(42px, 7vw, 92px);
+    line-height:0.95;
+    max-width:780px;
+  }
+  .hero h1 span{ color:var(--red); }
+  .hero p.lead{
+    font-family:'Inter', sans-serif;
+    color:var(--gray);
+    font-size:17px;
+    max-width:480px;
+    margin-top:24px;
+    line-height:1.6;
+  }
+  .hero-actions{ display:flex; gap:16px; margin-top:40px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:14px 26px;
+    font-size:14px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
+    transition:all .25s;
+  }
+  .btn-primary{ background:var(--red); color:var(--white); }
+  .btn-primary:hover{ filter:brightness(1.15); transform:translateY(-1px); }
+  .btn-ghost{ border:1px solid var(--line); color:var(--white); }
+  .btn-ghost:hover{ border-color:var(--gray); background:var(--surface); }
+
+  .hero-motto{
+    position:absolute; bottom:36px; left:32px; z-index:2;
+    font-size:12px; letter-spacing:0.2em; color:var(--gray);
+    font-family:'JetBrains Mono', monospace;
+  }
+  .hero-motto strong{ color:var(--white); }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding:110px 0; position:relative; }
+  .section-head{ margin-bottom:56px; max-width:640px; }
+  .section-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:0.15em; color:var(--red);
+    display:block; margin-bottom:14px;
+  }
+  .section-head h2{ font-size:clamp(28px,4vw,46px); line-height:1.05; }
+  .section-head p{ color:var(--gray); margin-top:16px; font-size:15px; line-height:1.6; }
+
+  /* ---------- VALUES STRIP ---------- */
+  .values{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:0;
+  }
+  .values-row{
+    display:grid; grid-template-columns:repeat(4,1fr);
+  }
+  .value-item{
+    padding:36px 28px;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .value-item:last-child{ border-right:none; }
+  .value-num{ font-family:'JetBrains Mono',monospace; color:var(--red); font-size:12px; }
+  .value-item h3{ font-size:16px; letter-spacing:0.04em; }
+
+  /* ---------- DIVISIONS ---------- */
+  .divisions-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .division{
+    background:var(--bg);
+    padding:44px 36px;
+    position:relative;
+    overflow:hidden;
+    transition:background .3s;
+  }
+  .division:hover{ background:var(--surface); }
+  .division::before{
+    content:'';
+    position:absolute; top:0; left:0; width:3px; height:0;
+    background:var(--red);
+    transition:height .3s;
+  }
+  .division:hover::before{ height:100%; }
+  .division-index{
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gray);
+    margin-bottom:24px; display:block;
+  }
+  .division h3{ font-size:26px; margin-bottom:6px; }
+  .division .sub{ color:var(--red); font-size:12px; letter-spacing:0.12em; margin-bottom:20px; display:block; }
+  .division ul{ list-style:none; }
+  .division li{
+    font-size:14px; color:var(--gray); padding:9px 0;
+    border-top:1px solid var(--line);
+  }
+  .division li:first-child{ border-top:none; }
+
+  /* ---------- WARRANTY ---------- */
+  .warranty{
+    background:var(--surface);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .warranty-inner{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;
+  }
+  .shield{
+    position:relative;
+    width:200px; aspect-ratio:1/1.15;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    clip-path:polygon(50% 0,100% 22%,100% 70%,50% 100%,0 70%,0 22%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px;
+    flex-shrink:0;
+  }
+  .shield .num{ font-size:52px; font-family:'Rajdhani',sans-serif; font-weight:700; color:var(--red); line-height:1; }
+  .shield .lbl{ font-size:12px; letter-spacing:0.15em; color:var(--gray); }
+  .warranty-copy-row{ display:flex; gap:40px; align-items:center; }
+  .warranty-copy h2{ font-size:clamp(26px,3.6vw,38px); margin-bottom:16px; }
+  .warranty-copy p{ color:var(--gray); font-size:15px; line-height:1.7; max-width:460px; }
+  .warranty-check{
+    margin-top:32px; background:var(--bg); border:1px solid var(--line);
+    padding:26px; max-width:460px;
+  }
+  .warranty-check label{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray);
+    letter-spacing:0.1em; display:block; margin-bottom:10px;
+  }
+  .warranty-check .row{ display:flex; gap:10px; }
+  .warranty-check input{
+    flex:1; background:var(--surface-2); border:1px solid var(--line);
+    color:var(--white); padding:12px 14px; font-family:'JetBrains Mono',monospace;
+    font-size:13px; letter-spacing:0.05em;
+  }
+  .warranty-check input::placeholder{ color:var(--gray); }
+  .warranty-check button{
+    background:var(--red); color:var(--white); border:none;
+    padding:0 22px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+    cursor:pointer;
+  }
+  .warranty-note{ font-size:12px; color:var(--gray); margin-top:10px; }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  .contact{
+    text-align:center;
+  }
+  .contact-mark{
+    width:120px; height:auto; opacity:0.9; margin:0 auto 28px;
+    display:block;
+  }
+  .contact h2{ font-size:clamp(30px,5vw,56px); }
+  .contact p{ color:var(--gray); margin-top:16px; }
+  .contact-actions{ display:flex; justify-content:center; gap:16px; margin-top:36px; flex-wrap:wrap; }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 0;
+  }
+  .footer-inner{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  }
+  .footer-links{ display:flex; gap:24px; }
+  .footer-links a{ font-size:13px; color:var(--gray); transition:color .2s; }
+  .footer-links a:hover{ color:var(--white); }
+  .footer-copy{ font-size:12px; color:var(--gray); font-family:'JetBrains Mono',monospace; }
+
+  /* ---------- REVEAL ANIM ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ transition:none; opacity:1; transform:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .nav-links{ display:none; }
+    .values-row{ grid-template-columns:repeat(2,1fr); }
+    .value-item{ border-right:1px solid var(--line); }
+    .value-item:nth-child(2n){ border-right:none; }
+    .divisions-grid{ grid-template-columns:1fr; }
+    .warranty-inner{ grid-template-columns:1fr; }
+    .warranty-copy-row{ flex-direction:column; align-items:flex-start; }
+    .footer-inner{ flex-direction:column; text-align:center; }
+  }
+  @media (max-width:520px){
+    .wrap, .hero-content, .section .wrap{ padding:0 20px; }
+    section{ padding:70px 0; }
+    .hero{ padding-top:100px; }
+    .warranty-check .row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <img src="assets/logo.png" alt="DEZA TECH" class="nav-logo">
+    <nav class="nav-links">
+      <a href="#divisi">Divisi</a>
+      <a href="#garansi">Garansi</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+    <a class="nav-cta" href="https://wa.me/6285716314611" target="_blank">Hubungi Kami</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-blade"></div>
+  <div class="hero-content">
+    <span class="eyebrow">LIGHTING · ELECTRONICS · WIRING</span>
+    <h1>DRIVEN BY<br><span>INNOVATION</span></h1>
+    <p class="lead">DEZA TECH mengembangkan solusi pencahayaan, elektronika kendaraan, dan sistem kelistrikan berkualitas tinggi dengan teknologi modern untuk performa maksimal di setiap perjalanan.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#divisi">Lihat Produk</a>
+      <a class="btn btn-ghost" href="https://wa.me/6285716314611" target="_blank">Chat WhatsApp</a>
+    </div>
+  </div>
+  <div class="hero-motto">INNOVATION IN MOTION — <strong>DEZA.TECH</strong></div>
+</section>
+
+<section class="values reveal">
+  <div class="values-row">
+    <div class="value-item">
+      <span class="value-num">01</span>
+      <h3>Presisi Tinggi</h3>
+    </div>
+    <div class="value-item">
+      <span class="value-num">02</span>
+      <h3>Kualitas Terbaik</h3>
+    </div>
+    <div class="value-item">
+      <span class="value-num">03</span>
+      <h3>Inovasi Terdepan</h3>
+    </div>
+    <div class="value-item">
+      <span class="value-num">04</span>
+      <h3>Layanan Profesional</h3>
+    </div>
+  </div>
+</section>
+
+<section id="divisi">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// 03 DIVISI</span>
+      <h2>Satu Merek, Tiga Keahlian</h2>
+      <p>Setiap divisi DEZA fokus pada satu bidang, dikembangkan dengan standar produksi dan pengujian yang sama.</p>
+    </div>
+    <div class="divisions-grid reveal">
+      <div class="division">
+        <span class="division-index">D01</span>
+        <span class="sub">DEZA LIGHTING</span>
+        <h3>Pencahayaan</h3>
+        <ul>
+          <li>Headlamp & Biled Projector</li>
+          <li>Stoplamp</li>
+          <li>DRL</li>
+          <li>Custom Lighting</li>
+        </ul>
+      </div>
+      <div class="division">
+        <span class="division-index">D02</span>
+        <span class="sub">DEZA ELECTRONICS</span>
+        <h3>Elektronika</h3>
+        <ul>
+          <li>Arduino & ESP32</li>
+          <li>ECU</li>
+          <li>CDI</li>
+          <li>Controller & Smart Module</li>
+        </ul>
+      </div>
+      <div class="division">
+        <span class="division-index">D03</span>
+        <span class="sub">DEZA WIRING</span>
+        <h3>Kelistrikan</h3>
+        <ul>
+          <li>Wiring Harness</li>
+          <li>Body Harness</li>
+          <li>Racing Harness</li>
+          <li>Custom Harness</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="garansi" class="warranty">
+  <div class="wrap warranty-inner reveal">
+    <div class="warranty-copy">
+      <span class="section-tag">// JAMINAN KUALITAS</span>
+      <div class="warranty-copy-row">
+        <div class="shield">
+          <span class="num">30</span>
+          <span class="lbl">HARI</span>
+        </div>
+        <div>
+          <h2>Garansi Setiap Produk & Jasa</h2>
+          <p>Setiap pembelian dilengkapi kartu garansi resmi dengan nomor unik. Garansi mencakup kerusakan akibat kesalahan produksi atau pemasangan selama 30 hari sejak tanggal pembelian.</p>
+        </div>
+      </div>
+      <div class="warranty-check">
+        <label>CEK STATUS GARANSI</label>
+        <div class="row">
+          <input type="text" placeholder="Contoh: DZT-2505001">
+          <button type="button">Cek</button>
+        </div>
+        <p class="warranty-note">Nomor garansi tertera pada kartu garansi fisik Anda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontak">
+  <div class="wrap contact reveal">
+    <img src="assets/icon-mark.png" alt="" class="contact-mark">
+    <h2>Butuh Konsultasi Produk?</h2>
+    <p>Tim kami siap membantu menentukan solusi lighting, electronics, atau wiring yang tepat untuk kendaraan Anda.</p>
+    <div class="contact-actions">
+      <a class="btn btn-primary" href="https://wa.me/6285716314611" target="_blank">WhatsApp 0857-1631-4611</a>
+      <a class="btn btn-ghost" href="https://instagram.com/deza.tech" target="_blank">Instagram @deza.tech</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="footer-copy">© 2026 DEZA TECH — INNOVATION IN MOTION</span>
+    <div class="footer-links">
+      <a href="https://instagram.com/deza.tech" target="_blank">Instagram</a>
+      <a href="https://facebook.com/DEZATECH" target="_blank">Facebook</a>
+      <a href="#" >www.dezatech.id</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  els.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katalog Produk — DEZA TECH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0D0D; --surface:#151515; --surface-2:#1c1c1c;
+    --white:#FFFFFF; --red:#E60012; --gray:#7A7A7A; --line:rgba(255,255,255,0.08);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; min-height:100vh; }
+  h1,h2,h3{ font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; }
+  a{ color:inherit; }
+
+  header{ border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; }
+  header a.back{ font-size:13px; color:var(--gray); letter-spacing:0.05em; }
+  header a.back:hover{ color:var(--white); }
+  .brand{ font-size:14px; letter-spacing:0.15em; font-family:'Rajdhani',sans-serif; font-weight:700; }
+  .brand span{ color:var(--red); }
+
+  main{ max-width:1160px; margin:0 auto; padding:64px 24px 100px; }
+  .page-tag{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--red); letter-spacing:0.15em; display:block; margin-bottom:14px; }
+  h1{ font-size:clamp(28px,5vw,42px); margin-bottom:14px; }
+  main > p.lead{ color:var(--gray); font-size:15px; line-height:1.6; margin-bottom:40px; max-width:600px; }
+
+  .filters{ display:flex; gap:10px; margin-bottom:40px; flex-wrap:wrap; }
+  .filter-btn{
+    background:none; border:1px solid var(--line); color:var(--gray);
+    padding:10px 20px; font-size:13px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    cursor:pointer; transition:all .2s;
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+  }
+  .filter-btn:hover{ border-color:var(--gray); color:var(--white); }
+  .filter-btn.active{ background:var(--red); border-color:var(--red); color:var(--white); }
+
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .card{
+    background:var(--bg); padding:32px 26px; position:relative; overflow:hidden;
+    transition:background .25s; display:flex; flex-direction:column;
+  }
+  .card:hover{ background:var(--surface); }
+  .card::before{
+    content:''; position:absolute; top:0; left:0; width:3px; height:0; background:var(--red); transition:height .3s;
+  }
+  .card:hover::before{ height:100%; }
+  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
+  .icon-mark{ width:44px; height:44px; }
+  .division-tag{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--red);
+    border:1px solid var(--red); padding:4px 8px; text-transform:uppercase;
+  }
+  .card h3{ font-size:19px; margin-bottom:8px; }
+  .card .desc{ font-size:13px; color:var(--gray); line-height:1.6; margin-bottom:18px; flex-grow:1; }
+  .card .specs{ list-style:none; margin-bottom:22px; }
+  .card .specs li{
+    font-size:12px; color:var(--gray); padding:7px 0; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between;
+  }
+  .card .specs li:first-child{ border-top:none; }
+  .card .specs li span{ color:var(--white); }
+  .cta{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--red); color:var(--white); font-size:12px; font-weight:600;
+    letter-spacing:0.06em; text-transform:uppercase; padding:11px 18px;
+    clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+    transition:filter .2s;
+  }
+  .cta:hover{ filter:brightness(1.15); }
+
+  .empty-hint{
+    grid-column:1/-1; background:var(--bg); text-align:center; padding:60px 20px; color:var(--gray); font-size:14px;
+  }
+
+  .note-strip{
+    margin-top:56px; border:1px solid var(--line); background:var(--surface); padding:22px 26px;
+    font-size:13px; color:var(--gray); line-height:1.6;
+  }
+  .note-strip strong{ color:var(--white); }
+
+  @media (max-width:860px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="index.html">← Kembali</a>
+  <div class="brand">DEZA<span>.</span>TECH</div>
+</header>
+
+<main>
+  <span class="page-tag">// KATALOG</span>
+  <h1>Katalog Produk</h1>
+  <p class="lead">Pilih kategori untuk melihat produk lighting, electronics, atau wiring. Tanyakan harga dan ketersediaan langsung via WhatsApp.</p>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">Semua</button>
+    <button class="filter-btn" data-filter="lighting">Lighting</button>
+    <button class="filter-btn" data-filter="electronics">Electronics</button>
+    <button class="filter-btn" data-filter="wiring">Wiring</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="note-strip">
+    <strong>Catatan:</strong> Harga tidak dicantumkan di halaman ini karena menyesuaikan tipe kendaraan dan spesifikasi pemasangan. Hubungi tim kami via WhatsApp untuk penawaran sesuai kebutuhan Anda.
+  </div>
+</main>
+
+<script>
+  const PRODUCTS = [
+    {
+      division: 'lighting', tag: 'DEZA Lighting',
+      name: 'Headlamp Projector Custom',
+      desc: 'Headlamp dengan proyektor biled dan DRL terintegrasi untuk pencahayaan tajam dan tampilan modern.',
+      specs: [['Tipe','Bi-LED Projector'],['DRL','Ya, terintegrasi'],['Pemasangan','Plug & play / custom']],
+    },
+    {
+      division: 'lighting', tag: 'DEZA Lighting',
+      name: 'Stoplamp LED Sequential',
+      desc: 'Lampu rem dengan efek sequential untuk visibilitas lebih baik di jalan.',
+      specs: [['Tipe','LED Sequential'],['Warna','Merah / Smoke'],['Pemasangan','Custom sesuai model']],
+    },
+    {
+      division: 'lighting', tag: 'DEZA Lighting',
+      name: 'DRL Welcome Light',
+      desc: 'Lampu DRL dengan efek welcome light saat kontak menyala, menambah kesan eksklusif.',
+      specs: [['Tipe','DRL + Welcome Sequence'],['Kontrol','Otomatis via ACC'],['Pemasangan','Custom']],
+    },
+    {
+      division: 'electronics', tag: 'DEZA Electronics',
+      name: 'ECU Performance Module',
+      desc: 'Modul pengaturan mesin untuk performa dan efisiensi bahan bakar yang lebih optimal.',
+      specs: [['Kompatibilitas','Motor injeksi'],['Fitur','Remap performa'],['Instalasi','Oleh teknisi']],
+    },
+    {
+      division: 'electronics', tag: 'DEZA Electronics',
+      name: 'CDI Racing Unit',
+      desc: 'CDI dengan pengaturan pengapian yang dapat disesuaikan untuk kebutuhan harian maupun racing.',
+      specs: [['Tipe','Programmable CDI'],['Limiter','Dapat disesuaikan'],['Instalasi','Plug & play']],
+    },
+    {
+      division: 'electronics', tag: 'DEZA Electronics',
+      name: 'Smart Controller ESP32',
+      desc: 'Modul kontrol berbasis ESP32 untuk sistem lighting custom seperti DRL Matrix dan animasi lampu.',
+      specs: [['Basis','ESP32'],['Kontrol','Web app / App'],['Aplikasi','Lighting custom']],
+    },
+    {
+      division: 'wiring', tag: 'DEZA Wiring',
+      name: 'Wiring Harness Standar',
+      desc: 'Instalasi kabel kelistrikan sesuai standar pabrikan, rapi dan aman untuk kendaraan harian.',
+      specs: [['Material','Kabel OFC'],['Konektor','Waterproof'],['Cocok untuk','Harian']],
+    },
+    {
+      division: 'wiring', tag: 'DEZA Wiring',
+      name: 'Racing Harness',
+      desc: 'Wiring harness ringan dengan konfigurasi khusus untuk kebutuhan performa dan balap.',
+      specs: [['Material','Kabel racing grade'],['Bobot','Lebih ringan'],['Cocok untuk','Racing / modifikasi']],
+    },
+    {
+      division: 'wiring', tag: 'DEZA Wiring',
+      name: 'Custom Body Harness',
+      desc: 'Wiring harness yang dirancang khusus mengikuti kebutuhan modifikasi lighting dan electronics.',
+      specs: [['Tipe','Custom sesuai desain'],['Kompatibilitas','Lighting & electronics DEZA'],['Cocok untuk','Modifikasi penuh']],
+    },
+  ];
+
+  const gridEl = document.getElementById('grid');
+
+  function iconSvg(){
+    return `<svg class="icon-mark" viewBox="0 0 44 44" fill="none">
+      <path d="M8 6 L26 6 L14 20 L20 20 L8 38 Z" fill="#E60012"/>
+    </svg>`;
+  }
+
+  function render(filter){
+    const items = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.division === filter);
+    if(items.length === 0){
+      gridEl.innerHTML = '<div class="empty-hint">Belum ada produk di kategori ini.</div>';
+      return;
+    }
+    gridEl.innerHTML = items.map(p => {
+      const waText = encodeURIComponent(`Halo DEZA TECH, saya ingin tanya harga & ketersediaan untuk produk: ${p.name}.`);
+      return `
+        <div class="card">
+          <div class="card-top">
+            ${iconSvg()}
+            <span class="division-tag">${p.tag}</span>
+          </div>
+          <h3>${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+          <ul class="specs">
+            ${p.specs.map(s => `<li>${s[0]}<span>${s[1]}</span></li>`).join('')}
+          </ul>
+          <a class="cta" href="https://wa.me/6285716314611?text=${waText}" target="_blank">Tanya Harga</a>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('filters').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if(!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.filter);
+  });
+
+  render('all');
+</script>
+
+</body>
+</html>
